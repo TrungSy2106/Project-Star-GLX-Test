@@ -78,3 +78,25 @@
       pointer-events: none;
       transition: opacity .4s ease;
     }
+
+    .button{
+      position:absolute; 
+      top:3%; 
+      right:0.25%; 
+      transform:translate(-50%, -50%); 
+      z-index:10;
+      background-color: transparent;
+      border: none;
+      height: 50px;
+      width: 50px;
+      cursor: pointer;
+    }
+
+    .button:hover img{
+      content: url(/assets/images/Music2.png);
+    }
+
+    .button img {
+      height: 50px;
+      width: 50px;
+    }
