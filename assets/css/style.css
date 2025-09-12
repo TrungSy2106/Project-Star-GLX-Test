@@ -93,7 +93,7 @@
     }
 
     .button:hover img{
-      content: url(/assets/images/Music2.png);
+      content: url(assets/images/Music2.png);
     }
 
     .button img {
