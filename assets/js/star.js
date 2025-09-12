@@ -162,7 +162,7 @@ class ShootingStar {
     }
     draw() {
     const x = w / 2 + Math.cos(this.angle + this.theta) * this.radius;
-    const y = 0 + Math.sin(this.angle + this.theta) * this.radius * 0.1;
+    const y = h / 2 + Math.sin(this.angle + this.theta) * this.radius * 0.1;
 
     // Vệt sao băng
     for (let i = 0; i < this.trail.length; i++) {
@@ -265,7 +265,7 @@ const source = document.getElementById("bgSource");
 
 const tracks = [
   "assets/audio/Song.mp3",
-  "assets/audio/(8) HOÀNG DŨNG - GIỮ ANH CHO NGÀY HÔM QUA (feat. RHYMASTIC) - OFFICIAL MUSIC VIDEO - YouTube.mp3"
+  "assets/audio/Song2.mp3"
 ];
 
 let current = 0;
