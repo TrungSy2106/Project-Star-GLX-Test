@@ -265,7 +265,7 @@ const source = document.getElementById("bgSource");
 
 const tracks = [
   "assets/audio/Song.mp3",
-  "/assets/audio/(8) HOÀNG DŨNG - GIỮ ANH CHO NGÀY HÔM QUA (feat. RHYMASTIC) - OFFICIAL MUSIC VIDEO - YouTube.mp3"
+  "assets/audio/(8) HOÀNG DŨNG - GIỮ ANH CHO NGÀY HÔM QUA (feat. RHYMASTIC) - OFFICIAL MUSIC VIDEO - YouTube.mp3"
 ];
 
 let current = 0;
