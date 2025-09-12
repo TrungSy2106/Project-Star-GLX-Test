@@ -162,7 +162,7 @@ class ShootingStar {
     }
     draw() {
     const x = w / 2 + Math.cos(this.angle + this.theta) * this.radius;
-    const y = h / 2 + Math.sin(this.angle + this.theta) * this.radius * 0.1;
+    const y = 0 + Math.sin(this.angle + this.theta) * this.radius * 0.1;
 
     // Vệt sao băng
     for (let i = 0; i < this.trail.length; i++) {
