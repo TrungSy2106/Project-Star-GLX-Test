@@ -1,0 +1,80 @@
+    html, body {
+        /* background-image: url('/assets/images/BGR.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat; */
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background: black;
+        overflow: hidden;
+    }
+    canvas {
+        display: block;
+    }
+    #startScreen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: black;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2rem;
+        z-index: 9999;
+        cursor: pointer;
+        transition: opacity 1s ease;
+    }
+
+    #startScreen.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    #rotateWrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+    }
+
+    #rotateWrapper.rotate {
+      width: 100vh;
+      height: 100vw;
+      transform-origin: top left;
+      transform: rotate(90deg) translate(0, -100%);
+      -webkit-transform-origin: top left;
+      -webkit-transform: rotate(90deg) translate(0, -100%);
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    #startScreen {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.6rem;
+      color: white;
+      background: rgba(0,0,0,0.6);
+      padding: 12px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      z-index: 9999;
+      user-select: none;
+    }
+
+    #startScreen.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .4s ease;
+    }
