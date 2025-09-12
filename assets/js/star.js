@@ -260,12 +260,20 @@ startScreen.addEventListener('click', () => {
 });
 
 
-const changeBtn = document.getElementById("changeSoundBtn");
 const audio1 = document.getElementById("bgMusic");
 const source = document.getElementById("bgSource");
 
-changeBtn.addEventListener("click", () => {
-  source.src = "assets/audio/(8) HOÀNG DŨNG - GIỮ ANH CHO NGÀY HÔM QUA (feat. RHYMASTIC) - OFFICIAL MUSIC VIDEO - YouTube.mp3";
+const tracks = [
+  "assets/audio/Song.mp3",
+  "/assets/audio/(8) HOÀNG DŨNG - GIỮ ANH CHO NGÀY HÔM QUA (feat. RHYMASTIC) - OFFICIAL MUSIC VIDEO - YouTube.mp3"
+];
+
+let current = 0;
+
+document.getElementById("changeSoundBtn").addEventListener("click", () => {
+  current = (current + 1) % tracks.length;
+
+  source.src = tracks[current] + "?v=" + Date.now();
   audio1.load();
   audio1.play().catch(err => console.log("Audio play blocked:", err));
 });
