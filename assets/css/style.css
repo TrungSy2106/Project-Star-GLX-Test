@@ -92,10 +92,6 @@
       cursor: pointer;
     }
 
-    .button:hover img{
-      content: url(assets/images/Music2.png);
-    }
-
     .button img {
       height: 50px;
       width: 50px;
