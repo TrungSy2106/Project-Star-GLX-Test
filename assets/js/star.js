@@ -52,7 +52,7 @@ for (let i = 0; i < 200; i++) {
 
 // Sao lấp lánh vài màu đại đại
 const colorSets = [
-    { core: "rgba(180, 80, 255, 1)", glow: "rgba(255, 230, 255, 0.8)" },
+    { core: "rgba(210, 130, 255, 1)", glow: "rgba(255, 230, 255, 0.8)" },
     { core: "rgba(80, 255, 120, 1)", glow: "rgba(230, 255, 230, 0.8)" },
     { core: "rgba(100, 180, 255, 1)", glow: "rgba(230, 245, 255, 0.8)" },
     { core: "rgba(255, 255, 255, 1)", glow: "rgba(255, 255, 255, 0.9)" }
@@ -60,52 +60,61 @@ const colorSets = [
 
 class TwinkleStar {
     constructor() {
-    this.x = Math.random() * w;
-    this.y = Math.random() * h;
+        this.x = Math.random() * w;
+        this.y = Math.random() * h;
 
-    var sizeStar = 2;
-    if (isMobile()) {
-        sizeStar = 1;
-    }
+        var sizeStar = 2.5;
+        if (isMobile()) {
+            sizeStar = 1;
+        }
 
-    this.size = Math.random() * sizeStar + 1;
-    this.phase = Math.random() * Math.PI * 2;
-    this.colors = colorSets[Math.floor(Math.random() * colorSets.length)];
+        this.size = Math.random() * sizeStar + 1;
+        this.phase = Math.random() * Math.PI * 2;
+        this.colors = colorSets[Math.floor(Math.random() * colorSets.length)];
+        
+        this.pulseSpeed = Math.random() * 0.5 + 0.5;
+        this.minScale = 0.3 + Math.random() * 0.3; // 30-60%
+        this.maxScale = 0.6 + Math.random() * 0.5; // 60-100%
     }
+    
     draw(time) {
-    const opacity = 0.5 + 0.5 * Math.sin(time * 2 + this.phase);
-    ctx.save();
-    ctx.globalAlpha = opacity;
-    ctx.translate(this.x, this.y);
+        const opacity = 0.3 + 0.7 * (0.5 + 0.5 * Math.sin(time * 2 * this.pulseSpeed + this.phase));
+        
+        const scaleMultiplier = this.minScale + (this.maxScale - this.minScale) * (0.5 + 0.5 * Math.sin(time * 7 * this.pulseSpeed + this.phase));
+        const currentSize = this.size * scaleMultiplier;
+        
+        ctx.save();
+        ctx.globalAlpha = opacity;
+        ctx.translate(this.x, this.y);
 
-    // Chấm sáng trung tâm
-    ctx.fillStyle = this.colors.core;
-    ctx.beginPath();
-    ctx.arc(0, 0, this.size, 0, Math.PI * 2);
-    ctx.fill();
+        // Chấm sáng trung tâm
+        ctx.fillStyle = this.colors.core;
+        ctx.beginPath();
+        ctx.arc(0, 0, currentSize, 0, Math.PI * 2);
+        ctx.fill();
 
-    // Tia ngang
-    ctx.strokeStyle = this.colors.glow;
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(-this.size * 3, 0);
-    ctx.lineTo(this.size * 3, 0);
-    ctx.stroke();
+        // Tia ngang
+        ctx.strokeStyle = this.colors.glow;
+        ctx.lineWidth = Math.max(0.5, currentSize * 0.3);
+        ctx.beginPath();
+        ctx.moveTo(-currentSize * 3, 0);
+        ctx.lineTo(currentSize * 3, 0);
+        ctx.stroke();
 
-    // Tia dọc
-    ctx.beginPath();
-    ctx.moveTo(0, -this.size * 3);
-    ctx.lineTo(0, this.size * 3);
-    ctx.stroke();
+        // Tia dọc
+        ctx.beginPath();
+        ctx.moveTo(0, -currentSize * 3);
+        ctx.lineTo(0, currentSize * 3);
+        ctx.stroke();
 
-    ctx.restore();
+        ctx.restore();
     }
 }
 
 const flickerColors = [
-    "rgba(180, 80, 255, 1)",
-    "rgba(80, 255, 120, 1)",
-    "rgba(100, 180, 255, 1)",
+    "rgba(210, 130, 255, 1)",
+    "rgba(120, 220, 150, 1)",
+    "rgba(150, 200, 255, 1)",
     "rgba(255, 255, 255, 1)"
 ];
 
@@ -130,13 +139,13 @@ class FlickerStar {
 }
 
 
-var quantity = 25;
+var quantity = 30;
 if (isMobile()) {
     quantity = 10;
 }
 
 const twinkleStars = Array.from({ length: quantity }, () => new TwinkleStar());
-const flickerStars = Array.from({ length: quantity - 15 }, () => new FlickerStar());
+const flickerStars = Array.from({ length: quantity - 10 }, () => new FlickerStar());
 
 
 // Sao băng
@@ -146,61 +155,81 @@ class ShootingStar {
     }
     reset() {
     this.angle = Math.random() * Math.PI;
-    this.radius = Math.random() * (h / 4) + h / 6;
-    this.speed = Math.random() * 0.002 + 0.003;
-    this.size = Math.random() * 2 + 1;
-    this.theta = 0;
+    this.radius = Math.random() * (h / 2.5) + h / 7;
+    this.speed = Math.random() * 0.001 + 0.002;
+    this.size = Math.random() * 2 + 1.5;
+    // this.theta = 0;
+    // this.trail = [];
+    this.theta = Math.random() * Math.PI * 2;
     this.trail = [];
+    this.trailLength = 150; 
+    this.debris = [];
     }
     update() {
     this.theta -= this.speed;
     const x = w / 2 + Math.cos(this.angle + this.theta) * this.radius;
-    const y = 0 + Math.sin(this.angle + this.theta) * this.radius;
+    const y = 0 + Math.sin(this.angle + this.theta) * this.radius*0.8;
     this.trail.push({ x, y });
     if (this.trail.length > 250) this.trail.shift();
     if (this.theta > Math.PI) this.reset();
     }
     draw() {
-    const x = w / 2 + Math.cos(this.angle + this.theta) * this.radius;
-    const y = 0 + Math.sin(this.angle + this.theta) * this.radius * 0.1;
+        const headColor      = { r: 240, g: 245, b: 255 };
+        const vibrantBodyColor = { r: 150, g: 200, b: 255 };
+        const tailColor      = { r: 71, g: 97, b: 230 };
 
-    // Vệt sao băng
-    for (let i = 0; i < this.trail.length; i++) {
-        const p = this.trail[i];
-        const alpha = i / this.trail.length;
+        for (let i = 0; i < this.trail.length; i++) {
+            const p = this.trail[i];
+            const progress = i / this.trail.length;
 
-        const grad = ctx.createLinearGradient(
-        this.trail[0].x, this.trail[0].y,
-        p.x, p.y
-        );
-        grad.addColorStop(0, `rgba(80, 160, 255, 0)`);
-        grad.addColorStop(0.5, `rgba(255, 255, 255, ${alpha})`);
-        grad.addColorStop(1, `rgba(90, 150, 255, ${alpha})`);
+            let r, g, b;
+            const transitionPoint = 0.95;
 
+            if (progress < transitionPoint) {
+                const localProgress = progress / transitionPoint;
+                
+                const easedProgress = localProgress * localProgress;
+
+                r = tailColor.r + (vibrantBodyColor.r - tailColor.r) * easedProgress;
+                g = tailColor.g + (vibrantBodyColor.g - tailColor.g) * easedProgress;
+                b = tailColor.b + (vibrantBodyColor.b - tailColor.b) * easedProgress;
+            } else {
+                const localProgress = (progress - transitionPoint) / (1 - transitionPoint);
+                r = vibrantBodyColor.r + (headColor.r - vibrantBodyColor.r) * localProgress;
+                g = vibrantBodyColor.g + (headColor.g - vibrantBodyColor.g) * localProgress;
+                b = vibrantBodyColor.b + (headColor.b - vibrantBodyColor.b) * localProgress;
+            }
+            
+            const alpha = progress * 0.95;
+            const size = this.size * 0.3 * progress;
+
+            ctx.fillStyle = `rgba(${Math.floor(r)}, ${Math.floor(g)}, ${Math.floor(b)}, ${alpha})`;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        const x = w / 2 + Math.cos(this.angle + this.theta) * this.radius;
+        const y = 0 + Math.sin(this.angle + this.theta) * this.radius * 0.1;
+
+        const grad = ctx.createRadialGradient(x, y, 0, x, y, 80);
+        grad.addColorStop(0, "rgba(100, 150, 255, 0.8)");
+        grad.addColorStop(1, "rgba(100, 150, 255, 0)");
+        
         ctx.fillStyle = grad;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, this.size * 0.3 * (i / this.trail.length), 0, Math.PI * 2);
+        ctx.arc(x, y, this.size * 0.5, 0, Math.PI * 2);
         ctx.fill();
-    }
-
-    // Đầu sao sáng
-    const grad = ctx.createRadialGradient(x, y, 0, x, y, 80);
-    grad.addColorStop(0, "rgba(100, 150, 255, 0.8)");
-    grad.addColorStop(1, "rgba(100, 150, 255, 0)");
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.arc(x, y, this.size * 0.5, 0, Math.PI * 2);
-    ctx.fill();
     }
 }
 
 
-const shootingStars = Array.from({ length: 25 }, () => new ShootingStar());
+const shootingStars = Array.from({ length: 30 }, () => new ShootingStar());
 
 const bgImage = new Image();
 bgImage.src = "assets/images/BGR.png";
 let bgTime = 0;
-const bgScaleSpeed = 0.0005;
+const bgScaleSpeed = 0.00039;
 const bgScaleMin = 1;
 const bgScaleMax = 1.1;
 
@@ -221,6 +250,13 @@ function animate(time) {
     ctx.fillStyle = "rgba(0,0,20,0.3)";
     ctx.fillRect(0, 0, w, h);
 
+    
+    // Sao băng
+    for (let ss of shootingStars) {
+    ss.update();
+    ss.draw();
+    }
+
     // Sao nền
     for (let s of stars) {
     s.alpha += s.speed;
@@ -237,13 +273,6 @@ function animate(time) {
 
     for (let f of flickerStars) {
     f.draw(time * 0.001);
-    }
-
-
-    // Sao băng
-    for (let ss of shootingStars) {
-    ss.update();
-    ss.draw();
     }
 
     requestAnimationFrame(animate);
