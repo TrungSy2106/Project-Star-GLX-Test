@@ -3,6 +3,10 @@ const ctx = canvas.getContext("2d");
 const audio = document.getElementById('bgMusic');
 const startScreen = document.getElementById('startScreen');
 let w, h;
+let isZooming = false;
+let zoomProgress = 0;
+const zoomDuration = 3500;
+let zoomStartTime = null;
 
 function isMobile() {
     return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -52,10 +56,12 @@ for (let i = 0; i < 200; i++) {
 
 // Sao lấp lánh vài màu đại đại
 const colorSets = [
-    { core: "rgba(210, 130, 255, 1)", glow: "rgba(255, 230, 255, 0.8)" },
+    { core: "rgba(138, 43, 226, 1)", glow: "rgba(255, 230, 255, 0.8)" },
     { core: "rgba(80, 255, 120, 1)", glow: "rgba(230, 255, 230, 0.8)" },
-    { core: "rgba(100, 180, 255, 1)", glow: "rgba(230, 245, 255, 0.8)" },
-    { core: "rgba(255, 255, 255, 1)", glow: "rgba(255, 255, 255, 0.9)" }
+    { core: "rgba(0, 191, 255, 1)", glow: "rgba(230, 245, 255, 0.8)" },
+    { core: "rgba(255, 255, 255, 1)", glow: "rgba(255, 255, 255, 0.9)" },
+    { core: "rgba(255, 255, 255, 1)", glow: "rgba(255, 255, 255, 0.9)" },
+    { core: "rgba(255, 255, 255, 1)", glow: "rgba(255, 255, 255, 0.9)" },
 ];
 
 class TwinkleStar {
@@ -114,8 +120,9 @@ class TwinkleStar {
 const flickerColors = [
     "rgba(210, 130, 255, 1)",
     "rgba(120, 220, 150, 1)",
-    "rgba(150, 200, 255, 1)",
-    "rgba(255, 255, 255, 1)"
+    "rgba(0, 255, 255, 1)",
+    "rgba(255, 255, 255, 1)",
+    "rgba(255, 255, 255, 1)",
 ];
 
 class FlickerStar {
@@ -155,9 +162,9 @@ class ShootingStar {
     }
     reset() {
     this.angle = Math.random() * Math.PI;
-    this.radius = Math.random() * (h / 2.5) + h / 7;
-    this.speed = Math.random() * 0.001 + 0.002;
-    this.size = Math.random() * 2 + 1.5;
+    this.radius = Math.random() * (h / 2.5) + h / 5;
+    this.speed = Math.random() * 0.001 + 0.001;
+    this.size = Math.random() * 2 + 1.7;
     // this.theta = 0;
     // this.trail = [];
     this.theta = Math.random() * Math.PI * 2;
@@ -168,9 +175,9 @@ class ShootingStar {
     update() {
     this.theta -= this.speed;
     const x = w / 2 + Math.cos(this.angle + this.theta) * this.radius;
-    const y = 0 + Math.sin(this.angle + this.theta) * this.radius*0.8;
+    const y = -h / 8 + Math.sin(this.angle + this.theta) * this.radius*0.8;
     this.trail.push({ x, y });
-    if (this.trail.length > 250) this.trail.shift();
+    if (this.trail.length > 280) this.trail.shift();
     if (this.theta > Math.PI) this.reset();
     }
     draw() {
@@ -236,6 +243,24 @@ const bgScaleMax = 1.1;
 // Hàm vẽ chính
 function animate(time) {
 
+    let currentScale = 1;
+    if (isZooming) {
+        const elapsed = time - zoomStartTime;
+        zoomProgress = Math.min(elapsed / zoomDuration, 1);
+        const easedProgress = 1 - Math.pow(1 - zoomProgress, 3);
+        currentScale = 0.85 + (0.15 * easedProgress);
+        if (zoomProgress >= 1) {
+            isZooming = false;
+            currentScale = 1;
+        }
+    }
+    
+    ctx.save();
+    ctx.scale(currentScale, currentScale);
+    const offsetX = (w * (1 - currentScale)) / (2 * currentScale);
+    const offsetY = (h * (1 - currentScale)) / (2 * currentScale);
+    ctx.translate(offsetX, offsetY);
+
     bgTime += 16;
 
     const bgScale = bgScaleMin + (bgScaleMax - bgScaleMin) * (0.5 + 0.5 * Math.sin(bgTime * bgScaleSpeed));
@@ -275,6 +300,8 @@ function animate(time) {
     f.draw(time * 0.001);
     }
 
+    ctx.restore();
+
     requestAnimationFrame(animate);
 }
 
@@ -284,6 +311,8 @@ startScreen.addEventListener('click', () => {
     });
 
     startScreen.classList.add('hidden');
+    isZooming = true;
+    zoomStartTime = performance.now();
 
     requestAnimationFrame(animate);
 });
