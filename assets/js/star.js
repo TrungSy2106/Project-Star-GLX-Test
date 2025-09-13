@@ -62,9 +62,7 @@ const colorSets = [
     { core: "rgba(255, 255, 255, 1)", glow: "rgba(255, 255, 255, 0.9)" },
     { core: "rgba(255, 255, 255, 1)", glow: "rgba(255, 255, 255, 0.9)" },
     { core: "rgba(255, 255, 255, 1)", glow: "rgba(255, 255, 255, 0.9)" },
-    { core: "rgba(255, 255, 255, 1)", glow: "rgba(255, 255, 255, 0.9)" },
-    { core: "rgba(255, 255, 255, 1)", glow: "rgba(255, 255, 255, 0.9)" },
-    { core: "rgba(255, 215, 0, 1)", glow: "rgba(255, 250, 200, 0.8)" },
+    { core: "rgba(255, 215, 0, 1)", glow: "rgba(255, 250, 200, 0.8)" }
 ];
 
 class TwinkleStar {
@@ -152,12 +150,12 @@ class FlickerStar {
 }
 
 
-var quantity = 50;
+var quantity = 30;
 if (isMobile()) {
     quantity = 10;
 }
 
-const twinkleStars = Array.from({ length: quantity - 20 }, () => new TwinkleStar());
+const twinkleStars = Array.from({ length: quantity }, () => new TwinkleStar());
 const flickerStars = Array.from({ length: quantity + 10 }, () => new FlickerStar());
 
 var sizeSS = 1.5;
