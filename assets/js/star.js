@@ -62,6 +62,7 @@ const colorSets = [
     { core: "rgba(255, 255, 255, 1)", glow: "rgba(255, 255, 255, 0.9)" },
     { core: "rgba(255, 255, 255, 1)", glow: "rgba(255, 255, 255, 0.9)" },
     { core: "rgba(255, 255, 255, 1)", glow: "rgba(255, 255, 255, 0.9)" },
+    { core: "rgba(255, 215, 0, 1)", glow: "rgba(255, 250, 200, 0.8)" },
 ];
 
 class TwinkleStar {
@@ -123,25 +124,26 @@ const flickerColors = [
     "rgba(0, 255, 255, 1)",
     "rgba(255, 255, 255, 1)",
     "rgba(255, 255, 255, 1)",
+    "rgba(255, 255, 255, 1)"
 ];
 
 class FlickerStar {
     constructor() {
-    this.x = Math.random() * w;
-    this.y = Math.random() * h;
-    this.size = Math.random() * 1.5 + 1;
-    this.phase = Math.random() * Math.PI * 2;
-    this.color = flickerColors[Math.floor(Math.random() * flickerColors.length)];
+        this.x = Math.random() * w;
+        this.y = Math.random() * h;
+        this.size = Math.random() * 1.5 + 1;
+        this.phase = Math.random() * Math.PI * 2;
+        this.color = flickerColors[Math.floor(Math.random() * flickerColors.length)];
     }
     draw(time) {
-    const opacity = 0.5 + 0.5 * Math.sin(time * 2 + this.phase);
-    ctx.save();
-    ctx.globalAlpha = opacity;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    ctx.fillStyle = this.color;
-    ctx.fill();
-    ctx.restore();
+        const opacity = 0.5 + 0.5 * Math.sin(time * 3.5 + this.phase);
+        ctx.save();
+        ctx.globalAlpha = opacity;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.restore();
     }
 }
 
@@ -154,6 +156,11 @@ if (isMobile()) {
 const twinkleStars = Array.from({ length: quantity }, () => new TwinkleStar());
 const flickerStars = Array.from({ length: quantity - 10 }, () => new FlickerStar());
 
+var sizeSS = 1.7;
+if (isMobile()) {
+    sizeSS = 1;
+}
+
 
 // Sao băng
 class ShootingStar {
@@ -161,24 +168,24 @@ class ShootingStar {
     this.reset();
     }
     reset() {
-    this.angle = Math.random() * Math.PI;
-    this.radius = Math.random() * (h / 2.5) + h / 5;
-    this.speed = Math.random() * 0.001 + 0.001;
-    this.size = Math.random() * 2 + 1.7;
-    // this.theta = 0;
-    // this.trail = [];
-    this.theta = Math.random() * Math.PI * 2;
-    this.trail = [];
-    this.trailLength = 150; 
-    this.debris = [];
+        this.angle = Math.random() * Math.PI;
+        this.radius = Math.random() * (h / 2.5) + h / 5;
+        this.speed = Math.random() * 0.001 + 0.001;
+        this.size = Math.random() * 2 + sizeSS;
+        // this.theta = 0;
+        // this.trail = [];
+        this.theta = Math.random() * Math.PI * 2;
+        this.trail = [];
+        this.trailLength = 150; 
+        this.debris = [];
     }
     update() {
-    this.theta -= this.speed;
-    const x = w / 2 + Math.cos(this.angle + this.theta) * this.radius;
-    const y = -h / 8 + Math.sin(this.angle + this.theta) * this.radius*0.8;
-    this.trail.push({ x, y });
-    if (this.trail.length > 280) this.trail.shift();
-    if (this.theta > Math.PI) this.reset();
+        this.theta -= this.speed;
+        const x = w / 2 + Math.cos(this.angle + this.theta) * this.radius;
+        const y = -h / 8 + Math.sin(this.angle + this.theta) * this.radius*0.8;
+        this.trail.push({ x, y });
+        if (this.trail.length > 280) this.trail.shift();
+        if (this.theta > Math.PI) this.reset();
     }
     draw() {
         const headColor      = { r: 240, g: 245, b: 255 };
@@ -231,7 +238,7 @@ class ShootingStar {
 }
 
 
-const shootingStars = Array.from({ length: 30 }, () => new ShootingStar());
+const shootingStars = Array.from({ length: 28 }, () => new ShootingStar());
 
 const bgImage = new Image();
 bgImage.src = "assets/images/BGR.png";
@@ -278,26 +285,26 @@ function animate(time) {
     
     // Sao băng
     for (let ss of shootingStars) {
-    ss.update();
-    ss.draw();
+        ss.update();
+        ss.draw();
     }
 
     // Sao nền
     for (let s of stars) {
-    s.alpha += s.speed;
-    ctx.fillStyle = `rgba(100, 150, 255, ${0.5 + Math.sin(s.alpha) * 0.5})`;
-    ctx.beginPath();
-    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-    ctx.fill();
+        s.alpha += s.speed;
+        ctx.fillStyle = `rgba(100, 150, 255, ${0.5 + Math.sin(s.alpha) * 0.5})`;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
     }
 
     // Sao nhiều màu
     for (let t of twinkleStars) {
-    t.draw(time * 0.001);
+        t.draw(time * 0.001);
     }
 
     for (let f of flickerStars) {
-    f.draw(time * 0.001);
+        f.draw(time * 0.001);
     }
 
     ctx.restore();
