@@ -62,6 +62,8 @@ const colorSets = [
     { core: "rgba(255, 255, 255, 1)", glow: "rgba(255, 255, 255, 0.9)" },
     { core: "rgba(255, 255, 255, 1)", glow: "rgba(255, 255, 255, 0.9)" },
     { core: "rgba(255, 255, 255, 1)", glow: "rgba(255, 255, 255, 0.9)" },
+    { core: "rgba(255, 255, 255, 1)", glow: "rgba(255, 255, 255, 0.9)" },
+    { core: "rgba(255, 255, 255, 1)", glow: "rgba(255, 255, 255, 0.9)" },
     { core: "rgba(255, 215, 0, 1)", glow: "rgba(255, 250, 200, 0.8)" },
 ];
 
@@ -79,8 +81,8 @@ class TwinkleStar {
         this.phase = Math.random() * Math.PI * 2;
         this.colors = colorSets[Math.floor(Math.random() * colorSets.length)];
         
-        this.pulseSpeed = Math.random() * 0.5 + 0.5;
-        this.minScale = 0.3 + Math.random() * 0.3; // 30-60%
+        this.pulseSpeed = Math.random() * 0.5 + 0.35;
+        this.minScale = 0.2 + Math.random() * 0.4; // 30-60%
         this.maxScale = 0.6 + Math.random() * 0.5; // 60-100%
     }
     
@@ -121,7 +123,9 @@ class TwinkleStar {
 const flickerColors = [
     "rgba(210, 130, 255, 1)",
     "rgba(120, 220, 150, 1)",
-    "rgba(0, 255, 255, 1)",
+    "rgba(0, 191, 255, 1)",
+    "rgba(0, 191, 255, 1)",
+    "rgba(0, 191, 255, 1)",
     "rgba(255, 255, 255, 1)",
     "rgba(255, 255, 255, 1)",
     "rgba(255, 255, 255, 1)"
@@ -148,15 +152,15 @@ class FlickerStar {
 }
 
 
-var quantity = 30;
+var quantity = 50;
 if (isMobile()) {
     quantity = 10;
 }
 
-const twinkleStars = Array.from({ length: quantity }, () => new TwinkleStar());
-const flickerStars = Array.from({ length: quantity - 10 }, () => new FlickerStar());
+const twinkleStars = Array.from({ length: quantity - 20 }, () => new TwinkleStar());
+const flickerStars = Array.from({ length: quantity + 10 }, () => new FlickerStar());
 
-var sizeSS = 1.7;
+var sizeSS = 1.5;
 if (isMobile()) {
     sizeSS = 1;
 }
@@ -169,7 +173,7 @@ class ShootingStar {
     }
     reset() {
         this.angle = Math.random() * Math.PI;
-        this.radius = Math.random() * (h / 2.5) + h / 5;
+        this.radius = Math.random() * (h / 2.8) + h / 4;
         this.speed = Math.random() * 0.001 + 0.001;
         this.size = Math.random() * 2 + sizeSS;
         // this.theta = 0;
@@ -238,12 +242,12 @@ class ShootingStar {
 }
 
 
-const shootingStars = Array.from({ length: 28 }, () => new ShootingStar());
+const shootingStars = Array.from({ length: 25 }, () => new ShootingStar());
 
 const bgImage = new Image();
 bgImage.src = "assets/images/BGR.png";
 let bgTime = 0;
-const bgScaleSpeed = 0.00039;
+const bgScaleSpeed = 0.0003;
 const bgScaleMin = 1;
 const bgScaleMax = 1.1;
 
