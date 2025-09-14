@@ -372,20 +372,20 @@ startScreen.addEventListener('click', () => {
 });
 
 
-const audio1 = document.getElementById("bgMusic");
-const source = document.getElementById("bgSource");
+// const audio1 = document.getElementById("bgMusic");
+// const source = document.getElementById("bgSource");
 
-const tracks = [
-  "assets/audio/Song.mp3",
-  "assets/audio/Song2.mp3"
-];
+// const tracks = [
+//   "assets/audio/Song.mp3",
+//   "assets/audio/Song2.mp3"
+// ];
 
-let current = 0;
+// let current = 0;
 
-document.getElementById("changeSoundBtn").addEventListener("click", () => {
-  current = (current + 1) % tracks.length;
+// document.getElementById("changeSoundBtn").addEventListener("click", () => {
+//   current = (current + 1) % tracks.length;
 
-  source.src = tracks[current] + "?v=" + Date.now();
-  audio1.load();
-  audio1.play().catch(err => console.log("Audio play blocked:", err));
-});
+//   source.src = tracks[current] + "?v=" + Date.now();
+//   audio1.load();
+//   audio1.play().catch(err => console.log("Audio play blocked:", err));
+// });
