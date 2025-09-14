@@ -56,13 +56,13 @@ for (let i = 0; i < 200; i++) {
 
 // Sao lấp lánh vài màu đại đại
 const colorSets = [
-    { core: "rgba(138, 43, 226, 1)", glow: "rgba(255, 230, 255, 0.8)" },
-    { core: "rgba(80, 255, 120, 1)", glow: "rgba(230, 255, 230, 0.8)" },
-    { core: "rgba(0, 191, 255, 1)", glow: "rgba(230, 245, 255, 0.8)" },
+    { core: "rgba(138, 43, 226, 1)", glow: "rgba(138, 43, 226, 0.9)" },
+    { core: "rgba(80, 255, 120, 1)", glow: "rgba(80, 255, 120, 0.9)" },
+    { core: "rgba(0, 191, 255, 1)", glow: "rgba(0, 191, 255, 0.9)" },
     { core: "rgba(255, 255, 255, 1)", glow: "rgba(255, 255, 255, 0.9)" },
     { core: "rgba(255, 255, 255, 1)", glow: "rgba(255, 255, 255, 0.9)" },
     { core: "rgba(255, 255, 255, 1)", glow: "rgba(255, 255, 255, 0.9)" },
-    { core: "rgba(255, 215, 0, 1)", glow: "rgba(255, 250, 200, 0.8)" }
+    { core: "rgba(255, 215, 0, 1)", glow: "rgba(255, 215, 0, 0.9)" }
 ];
 
 class TwinkleStar {
@@ -70,12 +70,12 @@ class TwinkleStar {
         this.x = Math.random() * w;
         this.y = Math.random() * h;
 
-        var sizeStar = 2.5;
+        var sizeStar = 3;
         if (isMobile()) {
             sizeStar = 1;
         }
 
-        this.size = Math.random() * sizeStar + 1;
+        this.size = Math.random() * sizeStar + 0.5;
         this.phase = Math.random() * Math.PI * 2;
         this.colors = colorSets[Math.floor(Math.random() * colorSets.length)];
         
@@ -97,22 +97,60 @@ class TwinkleStar {
         // Chấm sáng trung tâm
         ctx.fillStyle = this.colors.core;
         ctx.beginPath();
-        ctx.arc(0, 0, currentSize, 0, Math.PI * 2);
+        ctx.arc(0, 0, currentSize * 0.8, 0, Math.PI * 2);
         ctx.fill();
 
-        // Tia ngang
-        ctx.strokeStyle = this.colors.glow;
-        ctx.lineWidth = Math.max(0.5, currentSize * 0.3);
-        ctx.beginPath();
-        ctx.moveTo(-currentSize * 3, 0);
-        ctx.lineTo(currentSize * 3, 0);
-        ctx.stroke();
+        const length = currentSize * 3;
+        const width = currentSize * 0.8;
 
-        // Tia dọc
+        // Hiệu ứng tỏa sáng nhẹ
+        ctx.shadowBlur = 5;
+        ctx.shadowColor = this.colors.glow;
+        
+        ctx.fillStyle = this.colors.glow;
+
+        // Tia lên
         ctx.beginPath();
-        ctx.moveTo(0, -currentSize * 3);
-        ctx.lineTo(0, currentSize * 3);
-        ctx.stroke();
+        ctx.moveTo(-width/4, 0);
+        ctx.lineTo(-width/2, -length/3);
+        ctx.lineTo(0, -length);
+        ctx.lineTo(width/2, -length/3);
+        ctx.lineTo(width/4, 0); 
+        ctx.closePath();
+        ctx.fill();
+
+        // Tia xuống
+        ctx.beginPath();
+        ctx.moveTo(-width/4, 0);
+        ctx.lineTo(-width/2, length/3);
+        ctx.lineTo(0, length);
+        ctx.lineTo(width/2, length/3);
+        ctx.lineTo(width/4, 0);
+        ctx.closePath();
+        ctx.fill();
+
+        // Tia trái
+        ctx.beginPath();
+        ctx.moveTo(0, -width/4);
+        ctx.lineTo(-length/3, -width/2);
+        ctx.lineTo(-length, 0);
+        ctx.lineTo(-length/3, width/2);
+        ctx.lineTo(0, width/4);
+        ctx.closePath();
+        ctx.fill();
+
+        // Tia phải
+        ctx.beginPath();
+        ctx.moveTo(0, -width/4);
+        ctx.lineTo(length/3, -width/2);
+        ctx.lineTo(length, 0);
+        ctx.lineTo(length/3, width/2);
+        ctx.lineTo(0, width/4);
+        ctx.closePath();
+        ctx.fill();
+
+        // Tắt shadow
+        ctx.shadowBlur = 0;
 
         ctx.restore();
     }
@@ -141,10 +179,17 @@ class FlickerStar {
         const opacity = 0.5 + 0.5 * Math.sin(time * 3.5 + this.phase);
         ctx.save();
         ctx.globalAlpha = opacity;
+
+        ctx.shadowBlur = 3;
+        ctx.shadowColor = this.color;
+
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fillStyle = this.color;
         ctx.fill();
+
+        ctx.shadowBlur = 0;
+
         ctx.restore();
     }
 }
@@ -191,8 +236,8 @@ class ShootingStar {
     }
     draw() {
         const headColor      = { r: 240, g: 245, b: 255 };
-        const vibrantBodyColor = { r: 150, g: 200, b: 255 };
-        const tailColor      = { r: 71, g: 97, b: 230 };
+        const vibrantBodyColor = { r: 100, g: 200, b: 255 };
+        const tailColor      = { r: 71, g: 97, b: 255 };
 
         for (let i = 0; i < this.trail.length; i++) {
             const p = this.trail[i];
@@ -257,7 +302,7 @@ function animate(time) {
         const elapsed = time - zoomStartTime;
         zoomProgress = Math.min(elapsed / zoomDuration, 1);
         const easedProgress = 1 - Math.pow(1 - zoomProgress, 3);
-        currentScale = 0.85 + (0.15 * easedProgress);
+        currentScale = 0.87 + (0.13 * easedProgress);
         if (zoomProgress >= 1) {
             isZooming = false;
             currentScale = 1;
