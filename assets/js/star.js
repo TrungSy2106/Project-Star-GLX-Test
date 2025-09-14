@@ -360,9 +360,9 @@ function animate(time) {
 }
 
 startScreen.addEventListener('click', () => {
-    audio.play().catch(err => {
-    console.log("Audio play blocked:", err);
-    });
+    // audio.play().catch(err => {
+    // console.log("Audio play blocked:", err);
+    // });
 
     startScreen.classList.add('hidden');
     isZooming = true;
