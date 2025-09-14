@@ -1,6 +1,6 @@
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
-const audio = document.getElementById('bgMusic');
+// const audio = document.getElementById('bgMusic');
 const startScreen = document.getElementById('startScreen');
 let w, h;
 let isZooming = false;
