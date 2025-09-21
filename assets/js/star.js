@@ -288,7 +288,7 @@ class ShootingStar {
 const shootingStars = Array.from({ length: 25 }, () => new ShootingStar());
 
 const bgImage = new Image();
-bgImage.src = "assets/images/BGR.png";
+bgImage.src = "/assets/images/BGR.png";
 let bgTime = 0;
 const bgScaleSpeed = 0.0003;
 const bgScaleMin = 1;
