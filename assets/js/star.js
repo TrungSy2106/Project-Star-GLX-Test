@@ -401,7 +401,7 @@ const rawLyrics = `[00:00.00] Song
 [00:57.54] I hear about your last trace (Ta nghe thấy dấu vết cuối cùng của em)
 [01:03.94] Love is shining bright in the deep night (Tình yêu vẫn sáng rực giữa đêm tối)
 [01:07.01] Stand up to fight many times, then know what's wrong and right (Đứng lên chiến đấu nhiều lần mới hiểu thế nào đúng, thế nào sai)
-[01:09.96] The scars will finally heal (ết thương rồi cũng sẽ lành.)
+[01:09.96] The scars will finally heal (Vết thương rồi cũng sẽ lành.)
 [01:15.68] Do not fear the road not taken, the unresolved problem (Đừng sợ con đường chưa ai đi, đừng ngại những vấn đề chưa có lời giải)
 [01:22.36] Do not go, gentle into that good night (Đừng lặng lẽ buông xuôi vào đêm tối ấy)
 [01:28.09] The day I want to seize comes with the greetings of the breeze (Ngày mà ta muốn nắm bắt, sẽ đến cùng làn gió chào đón)
@@ -419,9 +419,9 @@ const rawLyrics = `[00:00.00] Song
 [02:48.75] At the journey's end, we will meet (Ở cuối hành trình, chúng ta sẽ gặp nhau)
 [02:55.04] To catch up with the sunlight, with the brightest fire (Để đuổi kịp ánh mặt trời, với ngọn lửa sáng nhất)
 [03:01.60] Because of you, the story will go on (Vì có em, câu chuyện này sẽ còn tiếp diễn)
-[03:07.36] The quest along the way, we will always appreciate (yeah) (Chặng hành trình này, ta sẽ luôn trân trọng)
+[03:07.36] The quest along the way, we will always appreciate (Chặng hành trình này, ta sẽ luôn trân trọng)
 [03:13.51] At the journey's end, we will meet (Ở cuối hành trình, chúng ta sẽ gặp lại nhau)
-[03:20.57] We will meet again (ah) (Chúng ta sẽ nhất định gặp lại nhau)
+[03:20.57] We will meet again (Chúng ta sẽ nhất định gặp lại nhau)
 [03:26.83] (…)`;
 
 function parseLyrics(raw) {
