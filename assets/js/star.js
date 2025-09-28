@@ -1,6 +1,6 @@
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
-// const audio = document.getElementById('bgMusic');
+const audio = document.getElementById('bgMusic');
 const startScreen = document.getElementById('startScreen');
 let w, h;
 let isZooming = false;
@@ -360,9 +360,9 @@ function animate(time) {
 }
 
 startScreen.addEventListener('click', () => {
-    // audio.play().catch(err => {
-    // console.log("Audio play blocked:", err);
-    // });
+    audio.play().catch(err => {
+    console.log("Audio play blocked:", err);
+    });
 
     startScreen.classList.add('hidden');
     isZooming = true;
@@ -389,3 +389,588 @@ startScreen.addEventListener('click', () => {
 //   audio1.load();
 //   audio1.play().catch(err => console.log("Audio play blocked:", err));
 // });
+
+
+const rawLyrics = `[00:00.00] Song
+[00:26.73] See, sometimes it's rainy (Thấy đấy, có lúc trời mưa)
+[00:32.11] Sometimes it's cloudy, that's what journey means (Có khi mây mù, đó chính là ý nghĩa của hành trình)
+[00:38.43] Can't see, the scene ahead is blurry (Con đường phía trước mờ mịt chẳng thấy rõ)
+[00:44.50] But we still must pursue the dream (Nhưng ta vẫn phải tiếp tục theo đuổi giấc mơ)
+[00:51.52] Travel through the heights and shallows (Băng qua đỉnh cao và vực sâu)
+[00:54.63] Put on a sturdy shell to face the hard perils (Khoác lên lớp vỏ cứng cáp để đối diện hiểm nguy)
+[00:57.54] I hear about your last trace (Ta nghe thấy dấu vết cuối cùng của em)
+[01:03.94] Love is shining bright in the deep night (Tình yêu vẫn sáng rực giữa đêm tối)
+[01:07.01] Stand up to fight many times, then know what's wrong and right (Đứng lên chiến đấu nhiều lần mới hiểu thế nào đúng, thế nào sai)
+[01:09.96] The scars will finally heal (ết thương rồi cũng sẽ lành.)
+[01:15.68] Do not fear the road not taken, the unresolved problem (Đừng sợ con đường chưa ai đi, đừng ngại những vấn đề chưa có lời giải)
+[01:22.36] Do not go, gentle into that good night (Đừng lặng lẽ buông xuôi vào đêm tối ấy)
+[01:28.09] The day I want to seize comes with the greetings of the breeze (Ngày mà ta muốn nắm bắt, sẽ đến cùng làn gió chào đón)
+[01:34.27] Will there be that day? Please tell me, tell me (Liệu có ngày đó không? Hãy nói cho ta biết…)
+[01:42.93] (…)
+[02:06.05] Travel through infinite dusks and dawns (Đi qua vô tận hoàng hôn và bình minh)
+[02:09.19] Break through the strong tide to reach the other side (Phá vỡ sóng dữ để đến bờ bên kia)
+[02:11.94] I hear about your last trace (Ta nghe thấy dấu vết cuối cùng của em)
+[02:18.42] Some words are heavy when some words are light (Có lời nặng trĩu, có lời lại nhẹ tênh)
+[02:21.52] We are like two meteors that miss each other (Ta và em như hai ngôi sao băng lỡ nhau trong đêm)
+[02:24.38] We will finally reunite (Nhưng cuối cùng, ta sẽ gặp lại nhau)
+[02:30.07] To catch up with the sunlight, with the brightest fire (Để đuổi kịp ánh mặt trời, ngọn lửa rực rỡ nhất)
+[02:36.84] The memories softly touch my face (Ký ức dịu dàng khẽ chạm vào khuôn mặt ta)
+[02:42.56] The freedom I want to seize takes me to an unknown place (Tự do mà ta khao khát sẽ dẫn ta đến nơi chưa biết)
+[02:48.75] At the journey's end, we will meet (Ở cuối hành trình, chúng ta sẽ gặp nhau)
+[02:55.04] To catch up with the sunlight, with the brightest fire (Để đuổi kịp ánh mặt trời, với ngọn lửa sáng nhất)
+[03:01.60] Because of you, the story will go on (Vì có em, câu chuyện này sẽ còn tiếp diễn)
+[03:07.36] The quest along the way, we will always appreciate (yeah) (Chặng hành trình này, ta sẽ luôn trân trọng)
+[03:13.51] At the journey's end, we will meet (Ở cuối hành trình, chúng ta sẽ gặp lại nhau)
+[03:20.57] We will meet again (ah) (Chúng ta sẽ nhất định gặp lại nhau)
+[03:26.83] (…)`;
+
+function parseLyrics(raw) {
+  const lines = raw.split("\n");
+  const parsed = [];
+  const timeRegex = /\[(\d+):(\d+\.\d+)\]/;
+
+  for (let line of lines) {
+    const match = timeRegex.exec(line);
+    if (match) {
+      const min = parseInt(match[1]);
+      const sec = parseFloat(match[2]);
+      const time = min * 60 + sec;
+      
+      const fullText = line.replace(timeRegex, "").trim();
+      let english = fullText;
+      let vietnamese = "";
+      
+      const vnMatch = fullText.match(/^(.*?)\s*\((.+)\)$/);
+      if (vnMatch) {
+        english = vnMatch[1].trim();
+        vietnamese = vnMatch[2].trim();
+      }
+      
+      parsed.push({ time, english, vietnamese });
+    }
+  }
+  return parsed;
+}
+
+const lyrics = parseLyrics(rawLyrics);
+
+const lyricsContainer = document.createElement("div");
+lyricsContainer.id = "lyricsContainer";
+lyricsContainer.style.position = "absolute";
+lyricsContainer.style.top = "50%";
+lyricsContainer.style.left = "50%";
+lyricsContainer.style.transform = "translate(-50%, -50%)";
+lyricsContainer.style.textAlign = "center";
+lyricsContainer.style.pointerEvents = "none";
+lyricsContainer.style.width = "80%";
+lyricsContainer.style.maxWidth = "800px";
+lyricsContainer.style.zIndex = "1000";
+document.body.appendChild(lyricsContainer);
+
+const previousLyric = document.createElement("div");
+previousLyric.className = "lyric-line previous";
+
+const currentLyric = document.createElement("div");
+currentLyric.className = "lyric-line current";
+
+const nextLyric = document.createElement("div");
+nextLyric.className = "lyric-line next";
+
+lyricsContainer.appendChild(previousLyric);
+lyricsContainer.appendChild(currentLyric);
+lyricsContainer.appendChild(nextLyric);
+
+const particlesContainer = document.createElement("div");
+particlesContainer.id = "lyricsParticles";
+particlesContainer.style.position = "absolute";
+particlesContainer.style.top = "0";
+particlesContainer.style.left = "0";
+particlesContainer.style.width = "100%";
+particlesContainer.style.height = "100%";
+particlesContainer.style.pointerEvents = "none";
+lyricsContainer.appendChild(particlesContainer);
+
+const enhancedLyricsStyle = document.createElement("style");
+enhancedLyricsStyle.textContent = `
+.lyric-line {
+  font-family: 'Tahoma', Helvetica, Arial, sans-serif;
+  font-weight: 600;
+  margin: 10px 0;
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  line-height: 1.4;
+}
+
+.lyric-line.previous {
+  font-size: 18px;
+  opacity: 0.4;
+  transform: translateY(-20px) scale(0.9);
+  background: linear-gradient(45deg, #6699ff, #99ccff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.lyric-line.current {
+  font-size: 32px;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  background: linear-gradient(45deg, 
+    #ffffff 0%, 
+    #66ccff 25%, 
+    #99ddff 50%, 
+    #ffffff 75%, 
+    #b3e6ff 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmerGlow 3s ease-in-out infinite, textPulse 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 15px rgba(102, 204, 255, 0.6));
+}
+
+.lyric-line.next {
+  font-size: 20px;
+  opacity: 0.3;
+  transform: translateY(20px) scale(0.85);
+  background: linear-gradient(45deg, #99ccff, #b3d9ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@keyframes shimmerGlow {
+  0%, 100% { 
+    background-position: 0% 50%;
+    filter: drop-shadow(0 0 15px rgba(102, 204, 255, 0.6));
+  }
+  50% { 
+    background-position: 100% 50%;
+    filter: drop-shadow(0 0 25px rgba(102, 204, 255, 0.9));
+  }
+}
+
+@keyframes textPulse {
+  0%, 100% { 
+    transform: translateY(0) scale(1);
+  }
+  50% { 
+    transform: translateY(-2px) scale(1.02);
+  }
+}
+
+.lyric-line.appear {
+  animation: lyricAppear 0.8s ease-out;
+}
+
+@keyframes lyricAppear {
+  0% { 
+    opacity: 0; 
+    transform: translateY(30px) scale(0.8) rotateX(90deg);
+  }
+  50% {
+    transform: translateY(-5px) scale(1.05) rotateX(0deg);
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0) scale(1) rotateX(0deg);
+  }
+}
+
+.lyric-line.disappear {
+  animation: lyricDisappear 0.6s ease-in;
+}
+
+@keyframes lyricDisappear {
+  0% { 
+    opacity: 1; 
+    transform: translateY(0) scale(1);
+  }
+  100% { 
+    opacity: 0; 
+    transform: translateY(-30px) scale(0.8);
+  }
+}
+
+/* Particles */
+.lyric-particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: radial-gradient(circle, rgba(102, 204, 255, 0.8) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: particleFloat 3s ease-out forwards;
+}
+
+@keyframes particleFloat {
+  0% { 
+    opacity: 0; 
+    transform: scale(0);
+  }
+  20% { 
+    opacity: 1; 
+    transform: scale(1);
+  }
+  100% { 
+    opacity: 0; 
+    transform: scale(0.5) translateY(-50px) translateX(var(--random-x, 0));
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .lyric-line.current {
+    font-size: 24px;
+  }
+  .lyric-line.previous {
+    font-size: 16px;
+  }
+  .lyric-line.next {
+    font-size: 18px;
+  }
+}
+`;
+document.head.appendChild(enhancedLyricsStyle);
+
+let currentLyricIndex = -1;
+let isTransitioning = false;
+let transitionTimeout = null;
+let appearTimeout = null;
+
+function createLyricParticles() {
+  const container = document.getElementById('lyricsParticles');
+  if (!container) return;
+  
+  for (let i = 0; i < 6; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'lyric-particle';
+    particle.style.left = (20 + Math.random() * 60) + '%';
+    particle.style.top = (30 + Math.random() * 40) + '%';
+    particle.style.setProperty('--random-x', (Math.random() - 0.5) * 100 + 'px');
+    particle.style.animationDelay = Math.random() * 0.2 + 's';
+    container.appendChild(particle);
+    
+    setTimeout(() => {
+      if (particle && particle.parentNode) {
+        particle.parentNode.removeChild(particle);
+      }
+    }, 3000);
+  }
+}
+
+function updateLyricsDisplay(index) {
+  if (!lyrics[index]) return;
+  
+  // Clear any pending transitions
+  if (transitionTimeout) clearTimeout(transitionTimeout);
+  if (appearTimeout) clearTimeout(appearTimeout);
+  
+  // Force stop current transition
+  isTransitioning = false;
+  currentLyric.classList.remove('appear', 'disappear');
+  
+  const prev = (index > 0 && lyrics[index - 1]) ? lyrics[index - 1] : null;
+  const curr = lyrics[index];
+  const next = (index < lyrics.length - 1 && lyrics[index + 1]) ? lyrics[index + 1] : null;
+  
+  // Immediate update for rapid changes
+  previousLyric.textContent = prev ? prev.text : "";
+  currentLyric.textContent = curr ? curr.text : "";
+  nextLyric.textContent = next ? next.text : "";
+  
+  // Reset styles
+  previousLyric.style.opacity = '';
+  currentLyric.style.opacity = '';
+  nextLyric.style.opacity = '';
+  
+  // Quick appear animation
+  currentLyric.classList.add('appear');
+  
+  // Create particles with delay để tránh spam
+  if (curr && curr.text && curr.text.trim() !== "") {
+    setTimeout(() => createLyricParticles(), 100);
+  }
+  
+  // Remove appear class
+  appearTimeout = setTimeout(() => {
+    currentLyric.classList.remove('appear');
+  }, 600); // Shorter duration
+}
+
+function animateWordsIndividually(element) {
+  // Skip word animation cho rapid changes
+  return;
+}
+
+// ===== FIXED: Event listener cho rapid changes =====
+let lastUpdateTime = 0;
+const UPDATE_THROTTLE = 100; // Minimum 100ms between updates
+
+audio.addEventListener("timeupdate", () => {
+  const now = Date.now();
+  
+  // Throttle updates để tránh spam
+  if (now - lastUpdateTime < UPDATE_THROTTLE) return;
+  lastUpdateTime = now;
+  
+  const t = audio.currentTime;
+  let foundIndex = -1;
+  
+  // Tìm lyrics hiện tại
+  for (let i = 0; i < lyrics.length; i++) {
+    if (lyrics[i] && typeof lyrics[i].time === 'number') {
+      if (t >= lyrics[i].time && (i === lyrics.length - 1 || t < lyrics[i + 1].time)) {
+        foundIndex = i;
+        break;
+      }
+    }
+  }
+  
+  // Update ngay lập tức khi có thay đổi
+  if (foundIndex >= 0 && currentLyricIndex !== foundIndex) {
+    currentLyricIndex = foundIndex;
+    updateLyricsDisplay(foundIndex);
+  }
+});
+
+// Simplified beat effects
+let beatEffectInterval;
+function addBeatEffects() {
+  if (beatEffectInterval) clearInterval(beatEffectInterval);
+  
+  beatEffectInterval = setInterval(() => {
+    if (audio.currentTime > 0 && !audio.paused) {
+      try {
+        if (twinkleStars && twinkleStars.length > 0) {
+          const randomIndex = Math.floor(Math.random() * Math.min(twinkleStars.length, 10)); // Limit range
+          const randomStar = twinkleStars[randomIndex];
+          if (randomStar && typeof randomStar.size === 'number') {
+            const originalSize = randomStar.size;
+            randomStar.size *= 1.3;
+            setTimeout(() => {
+              if (randomStar) randomStar.size = originalSize;
+            }, 200);
+          }
+        }
+      } catch (e) {
+        // Silent fail
+      }
+    }
+  }, 700);
+}
+
+addBeatEffects();
+
+const bilingualLyricsStyle = document.createElement("style");
+bilingualLyricsStyle.textContent = `
+.lyric-line {
+  font-family: 'Tahoma', Helvetica, Arial, sans-serif;
+  margin: 15px 0;
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  line-height: 1.3;
+}
+
+.lyric-english {
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.lyric-vietnamese {
+  font-weight: 400;
+  opacity: 0.8;
+  font-style: italic;
+}
+
+.lyric-line.previous .lyric-english {
+  font-size: 16px;
+  opacity: 0.4;
+  transform: translateY(-20px) scale(0.9);
+  background: linear-gradient(45deg, #6699ff, #99ccff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.lyric-line.previous .lyric-vietnamese {
+  font-size: 13px;
+  opacity: 0.3;
+  color: #8bb3ff;
+  display: none;
+}
+
+.lyric-line.current .lyric-english {
+  font-size: 32px;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  background: linear-gradient(45deg, 
+    #ffffff 0%, 
+    #66ccff 25%, 
+    #99ddff 50%, 
+    #ffffff 75%, 
+    #b3e6ff 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmerGlow 3s ease-in-out infinite, textPulse 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 15px rgba(102, 204, 255, 0.6));
+}
+
+.lyric-line.current .lyric-vietnamese {
+  font-size: 18px;
+  opacity: 0.9;
+  color: #b3d9ff;
+  text-shadow: 0 0 8px rgba(102, 204, 255, 0.4);
+}
+
+.lyric-line.next .lyric-english {
+  font-size: 18px;
+  opacity: 0.3;
+  transform: translateY(20px) scale(0.85);
+  background: linear-gradient(45deg, #99ccff, #b3d9ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.lyric-line.next .lyric-vietnamese {
+  font-size: 14px;
+  opacity: 0.25;
+  color: #99ccff;
+  display: none;
+}
+
+@keyframes shimmerGlow {
+  0%, 100% { 
+    background-position: 0% 50%;
+    filter: drop-shadow(0 0 15px rgba(102, 204, 255, 0.6));
+  }
+  50% { 
+    background-position: 100% 50%;
+    filter: drop-shadow(0 0 25px rgba(102, 204, 255, 0.9));
+  }
+}
+
+@keyframes textPulse {
+  0%, 100% { 
+    transform: translateY(0) scale(1);
+  }
+  50% { 
+    transform: translateY(-2px) scale(1.02);
+  }
+}
+
+.lyric-line.appear {
+  animation: lyricAppear 0.8s ease-out;
+}
+
+@keyframes lyricAppear {
+  0% { 
+    opacity: 0; 
+    transform: translateY(30px) scale(0.8);
+  }
+  50% {
+    transform: translateY(-5px) scale(1.05);
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .lyric-line.current .lyric-english {
+    font-size: 24px;
+  }
+  .lyric-line.current .lyric-vietnamese {
+    font-size: 16px;
+  }
+  .lyric-line.previous .lyric-english {
+    font-size: 14px;
+  }
+  .lyric-line.previous .lyric-vietnamese {
+    font-size: 11px;
+  }
+  .lyric-line.next .lyric-english {
+    font-size: 16px;
+  }
+  .lyric-line.next .lyric-vietnamese {
+    font-size: 12px;
+  }
+}
+`;
+
+// Replace existing CSS
+const oldStyle = document.querySelector('style');
+if (oldStyle) oldStyle.remove();
+document.head.appendChild(bilingualLyricsStyle);
+
+// ===== Update HTML structure =====
+// Clear existing content
+previousLyric.innerHTML = '';
+currentLyric.innerHTML = '';
+nextLyric.innerHTML = '';
+
+// Add English & Vietnamese elements for each line
+['previous', 'current', 'next'].forEach(type => {
+  const container = type === 'previous' ? previousLyric : 
+                  type === 'current' ? currentLyric : nextLyric;
+  
+  const englishDiv = document.createElement('div');
+  englishDiv.className = 'lyric-english';
+  
+  const vietnameseDiv = document.createElement('div');
+  vietnameseDiv.className = 'lyric-vietnamese';
+  
+  container.appendChild(englishDiv);
+  container.appendChild(vietnameseDiv);
+});
+
+// ===== Update display function =====
+function updateLyricsDisplay(index) {
+  if (!lyrics[index]) return;
+  
+  // Clear any pending transitions
+  if (transitionTimeout) clearTimeout(transitionTimeout);
+  if (appearTimeout) clearTimeout(appearTimeout);
+  
+  currentLyric.classList.remove('appear', 'disappear');
+  
+  const prev = (index > 0 && lyrics[index - 1]) ? lyrics[index - 1] : null;
+  const curr = lyrics[index];
+  const next = (index < lyrics.length - 1 && lyrics[index + 1]) ? lyrics[index + 1] : null;
+  
+  // Update previous lyrics
+  const prevEnglish = previousLyric.querySelector('.lyric-english');
+  const prevVietnamese = previousLyric.querySelector('.lyric-vietnamese');
+  prevEnglish.textContent = prev ? prev.english : "";
+  prevVietnamese.textContent = prev ? prev.vietnamese : "";
+  
+  // Update current lyrics
+  const currEnglish = currentLyric.querySelector('.lyric-english');
+  const currVietnamese = currentLyric.querySelector('.lyric-vietnamese');
+  currEnglish.textContent = curr ? curr.english : "";
+  currVietnamese.textContent = curr ? curr.vietnamese : "";
+  
+  // Update next lyrics
+  const nextEnglish = nextLyric.querySelector('.lyric-english');
+  const nextVietnamese = nextLyric.querySelector('.lyric-vietnamese');
+  nextEnglish.textContent = next ? next.english : "";
+  nextVietnamese.textContent = next ? next.vietnamese : "";
+  
+  // Animation
+  currentLyric.classList.add('appear');
+  
+  // Create particles
+  if (curr && curr.english && curr.english.trim() !== "") {
+    setTimeout(() => createLyricParticles(), 100);
+  }
+  
+  // Remove appear class
+  appearTimeout = setTimeout(() => {
+    currentLyric.classList.remove('appear');
+  }, 600);
+}
