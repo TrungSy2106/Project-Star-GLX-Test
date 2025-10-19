@@ -392,38 +392,17 @@ startScreen.addEventListener('click', () => {
 
 // const rawLyrics = `[00:00.00] Happy Mid-Autumn Festival!`;
 
-const rawLyrics = `[00:00.00] ♪ ♪ ♪
-[00:26.73] See, sometimes it's rainy (Thấy đấy, có lúc trời mưa)
-[00:32.11] Sometimes it's cloudy, that's what journey means (Có khi mây mù, đó chính là ý nghĩa của hành trình)
-[00:38.43] Can't see, the scene ahead is blurry (Con đường phía trước mờ mịt chẳng thấy rõ)
-[00:44.50] But we still must pursue the dream (Nhưng ta vẫn phải tiếp tục theo đuổi giấc mơ)
-[00:51.52] Travel through the heights and shallows (Băng qua đỉnh cao và vực sâu)
-[00:54.63] Put on a sturdy shell to face the hard perils (Khoác lên lớp vỏ cứng cáp để đối diện hiểm nguy)
-[00:57.54] I hear about your last trace (Ta nghe thấy dấu vết cuối cùng của em)
-[01:03.94] Love is shining bright in the deep night (Tình yêu vẫn sáng rực giữa đêm tối)
-[01:07.01] Stand up to fight many times, then know what's wrong and right (Đứng lên chiến đấu nhiều lần mới hiểu thế nào đúng, thế nào sai)
-[01:09.96] The scars will finally heal (Vết thương rồi cũng sẽ lành.)
-[01:15.68] Do not fear the road not taken, the unresolved problem (Đừng sợ con đường chưa ai đi, đừng ngại những vấn đề chưa có lời giải)
-[01:22.36] Do not go, gentle into that good night (Đừng lặng lẽ buông xuôi vào đêm tối ấy)
-[01:28.09] The day I want to seize comes with the greetings of the breeze (Ngày mà ta muốn nắm bắt, sẽ đến cùng làn gió chào đón)
-[01:34.27] Will there be that day? Please tell me, tell me (Liệu có ngày đó không? Hãy nói cho ta biết…)
-[01:42.93] ♪ ♪ ♪
-[02:06.05] Travel through infinite dusks and dawns (Đi qua vô tận hoàng hôn và bình minh)
-[02:09.19] Break through the strong tide to reach the other side (Phá vỡ sóng dữ để đến bờ bên kia)
-[02:11.94] I hear about your last trace (Ta nghe thấy dấu vết cuối cùng của em)
-[02:18.42] Some words are heavy when some words are light (Có lời nặng trĩu, có lời lại nhẹ tênh)
-[02:21.52] We are like two meteors that miss each other (Ta và em như hai ngôi sao băng lỡ nhau trong đêm)
-[02:24.38] We will finally reunite (Nhưng cuối cùng, ta sẽ gặp lại nhau)
-[02:30.07] To catch up with the sunlight, with the brightest fire (Để đuổi kịp ánh mặt trời, ngọn lửa rực rỡ nhất)
-[02:36.84] The memories softly touch my face (Ký ức dịu dàng khẽ chạm vào khuôn mặt ta)
-[02:42.56] The freedom I want to seize takes me to an unknown place (Tự do mà ta khao khát sẽ dẫn ta đến nơi chưa biết)
-[02:48.75] At the journey's end, we will meet (Ở cuối hành trình, chúng ta sẽ gặp nhau)
-[02:55.04] To catch up with the sunlight, with the brightest fire (Để đuổi kịp ánh mặt trời, với ngọn lửa sáng nhất)
-[03:01.60] Because of you, the story will go on (Vì có em, câu chuyện này sẽ còn tiếp diễn)
-[03:07.36] The quest along the way, we will always appreciate (Chặng hành trình này, ta sẽ luôn trân trọng)
-[03:13.51] At the journey's end, we will meet (Ở cuối hành trình, chúng ta sẽ gặp lại nhau)
-[03:20.57] We will meet again (Chúng ta sẽ nhất định gặp lại nhau)
-[03:26.83] (...)`;
+let rawLyrics = "";
+
+fetch("../Lyrics.txt")
+  .then(res => res.text())
+  .then(text => {
+    rawLyrics = text;
+    console.log("Đã load lyrics:", rawLyrics);
+  })
+  .catch(err => console.error("Không đọc được file Lyrics.txt:", err));
+
+
 
 function parseLyrics(raw) {
   const lines = raw.split("\n");
