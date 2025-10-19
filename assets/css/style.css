@@ -96,3 +96,87 @@
       height: 50px;
       width: 50px;
     }
+
+    .note-lyric {
+      display: inline-block;
+      font-size: 1.2em;
+      letter-spacing: 20px;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+
+    .note-lyric span {
+      display: inline-block;
+      background: linear-gradient(135deg, 
+        #ffffff 0%, 
+        #66ccff 50%, 
+        #99ddff 100%);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      transform-origin: center bottom;
+      opacity: 1 !important;
+      animation: noteJump 1.8s ease-in-out infinite !important;
+      filter: drop-shadow(0 0 12px rgba(102, 204, 255, 0.5));
+    }
+
+    .note-lyric span:nth-child(1) {
+      animation-delay: 0s !important;
+    }
+
+    .note-lyric span:nth-child(3) {
+      animation-delay: 0.2s !important;
+    }
+
+    .note-lyric span:nth-child(5) {
+      animation-delay: 0.4s !important;
+    }
+
+    @keyframes noteJump {
+      0%, 60%, 100% { 
+        transform: translateY(0) scale(1);
+        filter: drop-shadow(0 0 12px rgba(102, 204, 255, 0.5));
+      }
+      30% { 
+        transform: translateY(-15px) scale(1.15);
+        filter: drop-shadow(0 0 20px rgba(102, 204, 255, 0.8))
+                drop-shadow(0 0 30px rgba(153, 221, 255, 0.5));
+      }
+    }
+
+    .lyric-line.appear .note-lyric {
+      animation: none !important;
+    }
+
+    .lyric-line.appear .note-lyric span {
+      animation: noteJump 1.8s ease-in-out infinite !important;
+    }
+
+    .lyric-line.appear .note-lyric span:nth-child(1) {
+      animation-delay: 0s !important;
+    }
+
+    .lyric-line.appear .note-lyric span:nth-child(5) {
+      animation-delay: 0.2s !important;
+    }
+
+    .lyric-line.appear .note-lyric span:nth-child(5) {
+      animation-delay: 0.4s !important;
+    }
+
+    @media (max-width: 768px) {
+      .note-lyric {
+        font-size: 0.8em;
+        letter-spacing: 15px;
+      }
+    }
+
+    @media (max-width: 768px) and (orientation: portrait) {
+      #lyricsContainer {
+        transform: translate(-50%, -50%) rotate(90deg) !important;
+        transform-origin: center center;
+        width: 80vh !important;
+        max-width: none !important;
+      }
+    }

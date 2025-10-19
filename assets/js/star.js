@@ -221,7 +221,7 @@ class ShootingStar {
         this.size = Math.random() * 2 + sizeSS;
         // this.theta = 0;
         // this.trail = [];
-        this.theta = Math.random() * Math.PI * 2;
+        this.theta = Math.PI - 0.31;
         this.trail = [];
         this.trailLength = 150; 
         this.debris = [];
@@ -288,7 +288,7 @@ class ShootingStar {
 const shootingStars = Array.from({ length: 25 }, () => new ShootingStar());
 
 const bgImage = new Image();
-bgImage.src = "assets/images/BGR.png";
+bgImage.src = "assets/images/BGR3.png";
 let bgTime = 0;
 const bgScaleSpeed = 0.0003;
 const bgScaleMin = 1;
@@ -390,8 +390,40 @@ startScreen.addEventListener('click', () => {
 //   audio1.play().catch(err => console.log("Audio play blocked:", err));
 // });
 
+// const rawLyrics = `[00:00.00] Happy Mid-Autumn Festival!`;
 
-const rawLyrics = `[00:00.00] Song`;
+const rawLyrics = `[00:00.00] ♪ ♪ ♪
+[00:26.73] See, sometimes it's rainy (Thấy đấy, có lúc trời mưa)
+[00:32.11] Sometimes it's cloudy, that's what journey means (Có khi mây mù, đó chính là ý nghĩa của hành trình)
+[00:38.43] Can't see, the scene ahead is blurry (Con đường phía trước mờ mịt chẳng thấy rõ)
+[00:44.50] But we still must pursue the dream (Nhưng ta vẫn phải tiếp tục theo đuổi giấc mơ)
+[00:51.52] Travel through the heights and shallows (Băng qua đỉnh cao và vực sâu)
+[00:54.63] Put on a sturdy shell to face the hard perils (Khoác lên lớp vỏ cứng cáp để đối diện hiểm nguy)
+[00:57.54] I hear about your last trace (Ta nghe thấy dấu vết cuối cùng của em)
+[01:03.94] Love is shining bright in the deep night (Tình yêu vẫn sáng rực giữa đêm tối)
+[01:07.01] Stand up to fight many times, then know what's wrong and right (Đứng lên chiến đấu nhiều lần mới hiểu thế nào đúng, thế nào sai)
+[01:09.96] The scars will finally heal (Vết thương rồi cũng sẽ lành.)
+[01:15.68] Do not fear the road not taken, the unresolved problem (Đừng sợ con đường chưa ai đi, đừng ngại những vấn đề chưa có lời giải)
+[01:22.36] Do not go, gentle into that good night (Đừng lặng lẽ buông xuôi vào đêm tối ấy)
+[01:28.09] The day I want to seize comes with the greetings of the breeze (Ngày mà ta muốn nắm bắt, sẽ đến cùng làn gió chào đón)
+[01:34.27] Will there be that day? Please tell me, tell me (Liệu có ngày đó không? Hãy nói cho ta biết…)
+[01:42.93] ♪ ♪ ♪
+[02:06.05] Travel through infinite dusks and dawns (Đi qua vô tận hoàng hôn và bình minh)
+[02:09.19] Break through the strong tide to reach the other side (Phá vỡ sóng dữ để đến bờ bên kia)
+[02:11.94] I hear about your last trace (Ta nghe thấy dấu vết cuối cùng của em)
+[02:18.42] Some words are heavy when some words are light (Có lời nặng trĩu, có lời lại nhẹ tênh)
+[02:21.52] We are like two meteors that miss each other (Ta và em như hai ngôi sao băng lỡ nhau trong đêm)
+[02:24.38] We will finally reunite (Nhưng cuối cùng, ta sẽ gặp lại nhau)
+[02:30.07] To catch up with the sunlight, with the brightest fire (Để đuổi kịp ánh mặt trời, ngọn lửa rực rỡ nhất)
+[02:36.84] The memories softly touch my face (Ký ức dịu dàng khẽ chạm vào khuôn mặt ta)
+[02:42.56] The freedom I want to seize takes me to an unknown place (Tự do mà ta khao khát sẽ dẫn ta đến nơi chưa biết)
+[02:48.75] At the journey's end, we will meet (Ở cuối hành trình, chúng ta sẽ gặp nhau)
+[02:55.04] To catch up with the sunlight, with the brightest fire (Để đuổi kịp ánh mặt trời, với ngọn lửa sáng nhất)
+[03:01.60] Because of you, the story will go on (Vì có em, câu chuyện này sẽ còn tiếp diễn)
+[03:07.36] The quest along the way, we will always appreciate (Chặng hành trình này, ta sẽ luôn trân trọng)
+[03:13.51] At the journey's end, we will meet (Ở cuối hành trình, chúng ta sẽ gặp lại nhau)
+[03:20.57] We will meet again (Chúng ta sẽ nhất định gặp lại nhau)
+[03:26.83] (...)`;
 
 function parseLyrics(raw) {
   const lines = raw.split("\n");
@@ -415,7 +447,13 @@ function parseLyrics(raw) {
         vietnamese = vnMatch[2].trim();
       }
       
-      parsed.push({ time, english, vietnamese });
+      parsed.push({
+        time,
+        english,
+        vietnamese,
+        isNote: english.includes("♪")
+      });
+
     }
   }
   return parsed;
@@ -631,11 +669,9 @@ function createLyricParticles() {
 function updateLyricsDisplay(index) {
   if (!lyrics[index]) return;
   
-  // Clear any pending transitions
   if (transitionTimeout) clearTimeout(transitionTimeout);
   if (appearTimeout) clearTimeout(appearTimeout);
   
-  // Force stop current transition
   isTransitioning = false;
   currentLyric.classList.remove('appear', 'disappear');
   
@@ -643,50 +679,47 @@ function updateLyricsDisplay(index) {
   const curr = lyrics[index];
   const next = (index < lyrics.length - 1 && lyrics[index + 1]) ? lyrics[index + 1] : null;
   
-  // Immediate update for rapid changes
-  previousLyric.textContent = prev ? prev.text : "";
-  currentLyric.textContent = curr ? curr.text : "";
-  nextLyric.textContent = next ? next.text : "";
+  if (curr && curr.isNote) {
+    const notes = curr.english.split("").map(ch => `<span>${ch}</span>`).join("");
+    currentLyric.innerHTML = `<span class="note-lyric">${notes}</span>`;
+  } else {
+    currentLyric.textContent = curr
+      ? curr.english + (curr.vietnamese ? " - " + curr.vietnamese : "")
+      : "";
+  }
+
   
-  // Reset styles
   previousLyric.style.opacity = '';
   currentLyric.style.opacity = '';
   nextLyric.style.opacity = '';
   
-  // Quick appear animation
   currentLyric.classList.add('appear');
   
-  // Create particles with delay để tránh spam
   if (curr && curr.text && curr.text.trim() !== "") {
     setTimeout(() => createLyricParticles(), 100);
   }
   
-  // Remove appear class
   appearTimeout = setTimeout(() => {
     currentLyric.classList.remove('appear');
-  }, 600); // Shorter duration
+  }, 600); 
 }
 
 function animateWordsIndividually(element) {
-  // Skip word animation cho rapid changes
   return;
 }
 
-// ===== FIXED: Event listener cho rapid changes =====
 let lastUpdateTime = 0;
-const UPDATE_THROTTLE = 100; // Minimum 100ms between updates
+const UPDATE_THROTTLE = 100;
 
 audio.addEventListener("timeupdate", () => {
   const now = Date.now();
   
-  // Throttle updates để tránh spam
   if (now - lastUpdateTime < UPDATE_THROTTLE) return;
   lastUpdateTime = now;
   
   const t = audio.currentTime;
   let foundIndex = -1;
   
-  // Tìm lyrics hiện tại
   for (let i = 0; i < lyrics.length; i++) {
     if (lyrics[i] && typeof lyrics[i].time === 'number') {
       if (t >= lyrics[i].time && (i === lyrics.length - 1 || t < lyrics[i + 1].time)) {
@@ -696,14 +729,12 @@ audio.addEventListener("timeupdate", () => {
     }
   }
   
-  // Update ngay lập tức khi có thay đổi
   if (foundIndex >= 0 && currentLyricIndex !== foundIndex) {
     currentLyricIndex = foundIndex;
     updateLyricsDisplay(foundIndex);
   }
 });
 
-// Simplified beat effects
 let beatEffectInterval;
 function addBeatEffects() {
   if (beatEffectInterval) clearInterval(beatEffectInterval);
@@ -723,7 +754,6 @@ function addBeatEffects() {
           }
         }
       } catch (e) {
-        // Silent fail
       }
     }
   }, 700);
@@ -852,38 +882,34 @@ bilingualLyricsStyle.textContent = `
 /* Mobile responsive */
 @media (max-width: 768px) {
   .lyric-line.current .lyric-english {
-    font-size: 24px;
+    font-size: 16px;
   }
   .lyric-line.current .lyric-vietnamese {
-    font-size: 16px;
-  }
-  .lyric-line.previous .lyric-english {
     font-size: 14px;
   }
-  .lyric-line.previous .lyric-vietnamese {
+  .lyric-line.previous .lyric-english {
     font-size: 11px;
   }
+  .lyric-line.previous .lyric-vietnamese {
+    font-size: 8px;
+  }
   .lyric-line.next .lyric-english {
-    font-size: 16px;
+    font-size: 11px;
   }
   .lyric-line.next .lyric-vietnamese {
-    font-size: 12px;
+    font-size: 9px;
   }
 }
 `;
 
-// Replace existing CSS
 const oldStyle = document.querySelector('style');
 if (oldStyle) oldStyle.remove();
 document.head.appendChild(bilingualLyricsStyle);
 
-// ===== Update HTML structure =====
-// Clear existing content
 previousLyric.innerHTML = '';
 currentLyric.innerHTML = '';
 nextLyric.innerHTML = '';
 
-// Add English & Vietnamese elements for each line
 ['previous', 'current', 'next'].forEach(type => {
   const container = type === 'previous' ? previousLyric : 
                   type === 'current' ? currentLyric : nextLyric;
@@ -898,11 +924,9 @@ nextLyric.innerHTML = '';
   container.appendChild(vietnameseDiv);
 });
 
-// ===== Update display function =====
 function updateLyricsDisplay(index) {
   if (!lyrics[index]) return;
   
-  // Clear any pending transitions
   if (transitionTimeout) clearTimeout(transitionTimeout);
   if (appearTimeout) clearTimeout(appearTimeout);
   
@@ -912,33 +936,33 @@ function updateLyricsDisplay(index) {
   const curr = lyrics[index];
   const next = (index < lyrics.length - 1 && lyrics[index + 1]) ? lyrics[index + 1] : null;
   
-  // Update previous lyrics
   const prevEnglish = previousLyric.querySelector('.lyric-english');
   const prevVietnamese = previousLyric.querySelector('.lyric-vietnamese');
   prevEnglish.textContent = prev ? prev.english : "";
   prevVietnamese.textContent = prev ? prev.vietnamese : "";
   
-  // Update current lyrics
   const currEnglish = currentLyric.querySelector('.lyric-english');
   const currVietnamese = currentLyric.querySelector('.lyric-vietnamese');
-  currEnglish.textContent = curr ? curr.english : "";
-  currVietnamese.textContent = curr ? curr.vietnamese : "";
+  if (curr && curr.isNote) {
+    const notes = curr.english.split("").map(ch => `<span>${ch}</span>`).join("");
+    currEnglish.innerHTML = `<span class="note-lyric">${notes}</span>`;
+    currVietnamese.textContent = "";
+  } else {
+    currEnglish.textContent = curr ? curr.english : "";
+    currVietnamese.textContent = curr ? curr.vietnamese : "";
+  }
   
-  // Update next lyrics
   const nextEnglish = nextLyric.querySelector('.lyric-english');
   const nextVietnamese = nextLyric.querySelector('.lyric-vietnamese');
   nextEnglish.textContent = next ? next.english : "";
   nextVietnamese.textContent = next ? next.vietnamese : "";
   
-  // Animation
   currentLyric.classList.add('appear');
   
-  // Create particles
   if (curr && curr.english && curr.english.trim() !== "") {
     setTimeout(() => createLyricParticles(), 100);
   }
   
-  // Remove appear class
   appearTimeout = setTimeout(() => {
     currentLyric.classList.remove('appear');
   }, 600);
